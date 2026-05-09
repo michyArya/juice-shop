@@ -7,34 +7,30 @@ env:
       includePaths:
         - http://localhost:3000.*
 
-        authentication:
-            method: "browser"
-            parameters:
-              loginPageUrl: "http://localhost:3000/#/login"
-              browserId: "firefox-headless"
-              loginPageWait: 5
-            verification:
-              method: "poll"
-              loggedInRegex: "\\Qadmin@juice-sh.op\\E"
-              loggedOutRegex: ""
-              pollFrequency: 60
-              pollUnits: "requests"
-              pollUrl: "http://localhost:3000/rest/user/whoami"
-              pollPostData: ""
-        sessionManagement:
+      authentication:
+        method: "browser"
+        parameters:
+          loginPageUrl: "http://localhost:3000/#/login"
+          browserId: "firefox-headless"
+          loginPageWait: 5
+        verification:
+          method: "poll"
+          loggedInRegex: "\\Qadmin@juice-sh.op\\E"
+          loggedOutRegex: ""
+          pollFrequency: 60
+          pollUnits: "requests"
+          pollUrl: "http://localhost:3000/rest/user/whoami"
+          pollPostData: ""
+      sessionManagement:
         method: headers
         parameters:
-            Authorization: "Bearer {%json:authentication.token%}"
-            cookie: "token={%json:authentication.token%}"
-        users:
-            - name: admin
-            credentials:
-                username: admin@juice-sh.op
-                password: admin123
-
-  parameters:
-    failOnError: false
-    progressToStdout: true
+          Authorization: "Bearer {%json:authentication.token%}"
+          cookie: "token={%json:authentication.token%}"
+      users:
+      - name: admin
+        credentials:
+          username: admin@juice-sh.op
+          password: admin123
 
 jobs:
   - type: spiderAjax  
