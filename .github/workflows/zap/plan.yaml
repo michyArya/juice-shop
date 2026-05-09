@@ -1,0 +1,66 @@
+env:
+  contexts:
+    - name: JuiceShop
+      urls:
+        - http://localhost:3000
+
+      includePaths:
+        - http://localhost:3000.*
+
+        authentication:
+            method: "browser"
+            parameters:
+              loginPageUrl: "http://localhost:3000/#/login"
+              browserId: "firefox-headless"
+              loginPageWait: 5
+            verification:
+              method: "poll"
+              loggedInRegex: "\\Qadmin@juice-sh.op\\E"
+              loggedOutRegex: ""
+              pollFrequency: 60
+              pollUnits: "requests"
+              pollUrl: "http://localhost:3000/rest/user/whoami"
+              pollPostData: ""
+        sessionManagement:
+        method: headers
+        parameters:
+            Authorization: "Bearer {%json:authentication.token%}"
+            cookie: "token={%json:authentication.token%}"
+        users:
+            - name: admin
+            credentials:
+                username: admin@juice-sh.op
+                password: admin123
+
+  parameters:
+    failOnError: false
+    progressToStdout: true
+
+jobs:
+  - type: spiderAjax  
+    parameters:
+      context: JuiceShop
+      user: admin
+      url: http://localhost:3000
+      browserId: firefox-headless
+          # Elemets to exclude from the spider
+      excludedElements:
+      - description: Logout
+        element: span
+        text: Logout
+      maxDuration: 5
+
+  - type: passiveScan-wait
+
+  - type: activeScan
+    parameters:
+      context: JuiceShop
+      user: admin
+      url: http://localhost:3000
+      maxScanDurationInMins: 10
+
+  - type: report
+    parameters:
+      template: traditional-html
+      reportDir: /zap/reports
+      reportFile: zap-report.html
