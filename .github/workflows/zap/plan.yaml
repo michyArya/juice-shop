@@ -3,10 +3,8 @@ env:
     - name: JuiceShop
       urls:
         - http://localhost:3000
-
       includePaths:
         - http://localhost:3000.*
-
       authentication:
         method: "browser"
         parameters:
@@ -27,23 +25,25 @@ env:
           Authorization: "Bearer {%json:authentication.token%}"
           cookie: "token={%json:authentication.token%}"
       users:
-      - name: admin
-        credentials:
-          username: admin@juice-sh.op
-          password: admin123
+        - name: admin
+          credentials:
+            username: admin@juice-sh.op
+            password: admin123
+  parameters:
+    failOnError: false
+    progressToStdout: true
 
 jobs:
-  - type: spiderAjax  
+  - type: spiderAjax
     parameters:
       context: JuiceShop
       user: admin
       url: http://localhost:3000
       browserId: firefox-headless
-          # Elemets to exclude from the spider
       excludedElements:
-      - description: Logout
-        element: span
-        text: Logout
+        - description: Logout
+          element: span
+          text: Logout
       maxDuration: 5
 
   - type: passiveScan-wait
